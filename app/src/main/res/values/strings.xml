@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">HotelsApp</string>
+    <string name="stars">stars</string>
+    <string name="distance">Distance to the centre:</string>
+    <string name="suites_available">Suites available:</string>
+    <string name="sort_by">Sort by</string>
+    <string name="connection_error">Internet connection error</string>
+</resources>
