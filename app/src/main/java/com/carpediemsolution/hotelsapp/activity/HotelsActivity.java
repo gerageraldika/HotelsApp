@@ -32,6 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -42,7 +43,6 @@ import rx.schedulers.Schedulers;
 public class HotelsActivity extends AppCompatActivity implements DialogScreen.EditDialogListener, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String LOG_TAG = "HotelsActivity";
-    private List<Hotel> hotelList;
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -58,6 +58,8 @@ public class HotelsActivity extends AppCompatActivity implements DialogScreen.Ed
     private String sortParams;
     private Observable<List<Hotel>> observable;
     private SortUtils sortUtils;
+    private Observer observer;
+    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,7 @@ public class HotelsActivity extends AppCompatActivity implements DialogScreen.Ed
         ButterKnife.bind(this);
 
         sortUtils = new SortUtils();
-        hotelList = new ArrayList<>();
+        List<Hotel> hotelList = new ArrayList<>();
 
         setSupportActionBar(mToolbar);
 
@@ -76,7 +78,7 @@ public class HotelsActivity extends AppCompatActivity implements DialogScreen.Ed
         mRecyclerView.setAdapter(mAdapter);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        mProgressDialog = new ProgressDialog(HotelsActivity.this, R.style.AppCompatAlertDialogStyle);
+            mProgressDialog = new ProgressDialog(HotelsActivity.this, R.style.AppCompatAlertDialogStyle);
         else
             mProgressDialog = new ProgressDialog(HotelsActivity.this, R.style.AlertDialog_Holo);
 
@@ -91,7 +93,38 @@ public class HotelsActivity extends AppCompatActivity implements DialogScreen.Ed
 
         prefs = PreferenceManager.getDefaultSharedPreferences(HotelsActivity.this);
         sortParams = prefs.getString(Preferences.PREFERENCE, "");
-        loadHotels(sortParams);
+        loadHotels();
+
+        observer = new Observer<List<Hotel>>() {
+            @Override
+            public void onCompleted() {
+                Log.d("onCompleted", "");
+                mProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d("onError ", e.toString());
+                Toast.makeText(HotelsActivity.this,
+                        getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                mProgressDialog.dismiss();
+            }
+
+            @Override
+            public void onNext(List<Hotel> hotels) {
+                Log.d("onNext ", hotels.toString());
+                //test progressDialog
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                hotels = sortUtils.sortByParams(sortParams, hotels);
+
+                mAdapter.setHotels(hotels);
+                mAdapter.notifyDataSetChanged();
+            }
+        };
     }
 
     @Override
@@ -120,41 +153,13 @@ public class HotelsActivity extends AppCompatActivity implements DialogScreen.Ed
     }
 
     //rx download list of hotels, add messages in recyclerview
-    public void loadHotels(final String params) {
+    public void loadHotels() {
         observable = getObservable();
-        observable
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Hotel>>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d("onCompleted", "");
-                        mProgressDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d("onError ", e.toString());
-                        Toast.makeText(HotelsActivity.this,
-                                getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
-                        mProgressDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onNext(List<Hotel> hotels) {
-                        Log.d("onNext ", hotels.toString());
-                        //test progressDialog
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        hotels = sortUtils.sortByParams(params, hotels);
-
-                        mAdapter.setHotels(hotels);
-                        mAdapter.notifyDataSetChanged();
-                    }
-                });
+        subscription =
+                observable
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(observer);
     }
 
     //update chosen sort settings
@@ -163,7 +168,7 @@ public class HotelsActivity extends AppCompatActivity implements DialogScreen.Ed
         Log.d(LOG_TAG, "get data from dialog");
         prefs = PreferenceManager.getDefaultSharedPreferences(HotelsActivity.this);
         sortParams = prefs.getString(Preferences.PREFERENCE, "");
-        loadHotels(sortParams);
+        loadHotels();
     }
 
     //set params to ProgressDialog
@@ -174,16 +179,13 @@ public class HotelsActivity extends AppCompatActivity implements DialogScreen.Ed
 
     @Override
     public void onRefresh() {
-        loadHotels(sortParams);
+        loadHotels();
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    public class MathUtils {
-        public double average(int a, int b) {
-
-            return a + b / 2;
-        }
-
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        subscription.unsubscribe();
     }
 }

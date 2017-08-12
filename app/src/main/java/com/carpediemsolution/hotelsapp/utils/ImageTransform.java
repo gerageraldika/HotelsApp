@@ -19,7 +19,7 @@ public class ImageTransform implements Transformation {
         Bitmap squaredBitmap = Bitmap.createBitmap(source, 1, 1, x, y);
 
 
-        if (squaredBitmap != source) {
+        if (!squaredBitmap.equals(source)) {
             source.recycle();
         }
         return squaredBitmap;
