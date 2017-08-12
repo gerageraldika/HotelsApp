@@ -14,8 +14,6 @@ import com.carpediemsolution.hotelsapp.model.Hotel;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Юлия on 24.07.2017.
@@ -51,15 +49,16 @@ public class HotelsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private TaskHolder(View itemView) {
             super(itemView);
 
-            mNameTextView = (TextView)itemView.findViewById(R.id.name_item_text_view);
-            mAdressTextView=(TextView)itemView.findViewById(R.id.adress_item_text_view);
-            mStarsTextView=(TextView)itemView.findViewById(R.id.stars_item_text_view);
-            mDistanceTextView=(TextView)itemView.findViewById(R.id.distance_item_text_view);
-            mSuitesTextView=(TextView)itemView.findViewById(R.id.suites_item_text_view);
+            mNameTextView = (TextView) itemView.findViewById(R.id.name_item_text_view);
+            mAdressTextView = (TextView) itemView.findViewById(R.id.adress_item_text_view);
+            mStarsTextView = (TextView) itemView.findViewById(R.id.stars_item_text_view);
+            mDistanceTextView = (TextView) itemView.findViewById(R.id.distance_item_text_view);
+            mSuitesTextView = (TextView) itemView.findViewById(R.id.suites_item_text_view);
 
             itemView.setOnClickListener(this);
 
         }
+
         //set OnClickListener on TaskHolder to open hotel's details
         @Override
         public void onClick(View v) {
@@ -96,12 +95,10 @@ public class HotelsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         if (viewType == EMPTY_VIEW) {
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_view, parent, false);
-            EmptyViewHolder evh = new EmptyViewHolder(v);
-            return evh;
+            return new EmptyViewHolder(v);
         } else {
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_item, parent, false);
-            TaskHolder vh = new TaskHolder(v);
-            return vh;
+            return new TaskHolder(v);
         }
     }
 
