@@ -24,13 +24,11 @@ public class HotelsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private static final int EMPTY_VIEW = 1;
     private Hotel mHotel;
     private Context mContext;
-
     private List<Hotel> mHotels;
 
     public HotelsAdapter(Context context) {
         this.mContext = context;
     }
-
 
     private class EmptyViewHolder extends RecyclerView.ViewHolder {
         private EmptyViewHolder(View itemView) {
@@ -40,11 +38,11 @@ public class HotelsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView mNameTextView;
-        TextView mAdressTextView;
-        TextView mStarsTextView;
-        TextView mDistanceTextView;
-        TextView mSuitesTextView;
+        private TextView mNameTextView;
+        private TextView mAdressTextView;
+        private TextView mStarsTextView;
+        private TextView mDistanceTextView;
+        private TextView mSuitesTextView;
 
         private TaskHolder(View itemView) {
             super(itemView);
@@ -56,7 +54,6 @@ public class HotelsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             mSuitesTextView = (TextView) itemView.findViewById(R.id.suites_item_text_view);
 
             itemView.setOnClickListener(this);
-
         }
 
         //set OnClickListener on TaskHolder to open hotel's details

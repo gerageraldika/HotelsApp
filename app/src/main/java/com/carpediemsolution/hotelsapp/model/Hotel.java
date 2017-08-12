@@ -29,10 +29,6 @@ public class Hotel {
     @SerializedName("image")
     private String mImageNumber;
 
-    public Hotel() {
-
-    }
-
     public int getmSuitesAvailable() {
         return mSuitesAvailability.split(":").length;
     }

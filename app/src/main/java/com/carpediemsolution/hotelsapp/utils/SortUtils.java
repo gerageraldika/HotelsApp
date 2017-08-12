@@ -16,10 +16,6 @@ public class SortUtils {
     //class for sorting hotels by params
     private static final String LOG_TAG = "SortUtils";
 
-    public SortUtils() {
-
-    }
-
     public List<Hotel> sortByParams(String sortParams, List<Hotel> hotels) {
         if (sortParams.equals(Preferences.DISTANCE)) {
             sortByDistance(hotels);

@@ -54,10 +54,10 @@ public class HotelsActivity extends AppCompatActivity implements DialogScreen.Ed
     private HotelsAdapter mAdapter;
     private ProgressDialog mProgressDialog;
 
-    SharedPreferences prefs;
-    String sortParams;
-    Observable<List<Hotel>> observable;
-    SortUtils sortUtils;
+    private SharedPreferences prefs;
+    private String sortParams;
+    private Observable<List<Hotel>> observable;
+    private SortUtils sortUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,17 +141,17 @@ public class HotelsActivity extends AppCompatActivity implements DialogScreen.Ed
                     }
 
                     @Override
-                    public void onNext(List<Hotel> messages) {
-                        Log.d("onNext ", messages.toString());
+                    public void onNext(List<Hotel> hotels) {
+                        Log.d("onNext ", hotels.toString());
                         //test progressDialog
                         try {
                             Thread.sleep(500);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        messages = sortUtils.sortByParams(params, messages);
+                        hotels = sortUtils.sortByParams(params, hotels);
 
-                        mAdapter.setHotels(messages);
+                        mAdapter.setHotels(hotels);
                         mAdapter.notifyDataSetChanged();
                     }
                 });
