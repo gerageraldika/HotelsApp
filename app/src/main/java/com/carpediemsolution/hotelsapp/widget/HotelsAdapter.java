@@ -22,12 +22,12 @@ import java.util.List;
 public class HotelsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int EMPTY_VIEW = 1;
-    private Hotel mHotel;
-    private Context mContext;
-    private List<Hotel> mHotels;
+    private Hotel hotel;
+    private Context context;
+    private List<Hotel> hotels;
 
     public HotelsAdapter(Context context) {
-        this.mContext = context;
+        this.context = context;
     }
 
     private class EmptyViewHolder extends RecyclerView.ViewHolder {
@@ -38,20 +38,20 @@ public class HotelsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView mNameTextView;
-        private TextView mAdressTextView;
-        private TextView mStarsTextView;
-        private TextView mDistanceTextView;
-        private TextView mSuitesTextView;
+        private TextView nameTextView;
+        private TextView adressTextView;
+        private TextView starsTextView;
+        private TextView distanceTextView;
+        private TextView suitesTextView;
 
         private TaskHolder(View itemView) {
             super(itemView);
 
-            mNameTextView = (TextView) itemView.findViewById(R.id.name_item_text_view);
-            mAdressTextView = (TextView) itemView.findViewById(R.id.adress_item_text_view);
-            mStarsTextView = (TextView) itemView.findViewById(R.id.stars_item_text_view);
-            mDistanceTextView = (TextView) itemView.findViewById(R.id.distance_item_text_view);
-            mSuitesTextView = (TextView) itemView.findViewById(R.id.suites_item_text_view);
+            nameTextView = (TextView) itemView.findViewById(R.id.name_item_text_view);
+            adressTextView = (TextView) itemView.findViewById(R.id.adress_item_text_view);
+            starsTextView = (TextView) itemView.findViewById(R.id.stars_item_text_view);
+            distanceTextView = (TextView) itemView.findViewById(R.id.distance_item_text_view);
+            suitesTextView = (TextView) itemView.findViewById(R.id.suites_item_text_view);
 
             itemView.setOnClickListener(this);
         }
@@ -60,17 +60,17 @@ public class HotelsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         @Override
         public void onClick(View v) {
             int position = getLayoutPosition();
-            mHotel = mHotels.get(position);
-            Intent intent = new Intent(mContext, HotelDetailsActivity.class);
-            intent.putExtra("id", String.valueOf(mHotel.getmId()));
-            mContext.startActivity(intent);
+            hotel = hotels.get(position);
+            Intent intent = new Intent(context, HotelDetailsActivity.class);
+            intent.putExtra("id", String.valueOf(hotel.getmId()));
+            context.startActivity(intent);
         }
     }
 
     //if list size = 0, return empty view
     @Override
     public int getItemViewType(int position) {
-        if (mHotels.size() == 0) {
+        if (hotels.size() == 0) {
             return EMPTY_VIEW;
         } else {
             return super.getItemViewType(position);
@@ -79,11 +79,11 @@ public class HotelsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return mHotels.size() > 0 ? mHotels.size() : 1;
+        return hotels.size() > 0 ? hotels.size() : 1;
     }
 
-    public void setHotels(List<Hotel> hotels) {
-        mHotels = hotels;
+    public void setHotels(List<Hotel> hotelList) {
+        hotels = hotelList;
     }
 
     @Override
@@ -103,13 +103,13 @@ public class HotelsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onBindViewHolder(RecyclerView.ViewHolder vho, int position) {
         if (vho instanceof TaskHolder) {
             TaskHolder vh = (TaskHolder) vho;
-            mHotel = mHotels.get(position);
+            hotel = hotels.get(position);
 
-            vh.mNameTextView.setText(mHotel.getmName());
-            vh.mAdressTextView.setText(mHotel.getmAdress());
-            vh.mStarsTextView.setText(String.valueOf(mHotel.getmStars()) + " " + mContext.getString(R.string.stars));
-            vh.mDistanceTextView.setText(mContext.getString(R.string.distance) + " " + String.valueOf(mHotel.getmDistance()));
-            vh.mSuitesTextView.setText(mContext.getString(R.string.suites_available) + " " + String.valueOf(mHotel.getmSuitesAvailable()));
+            vh.nameTextView.setText(hotel.getmName());
+            vh.adressTextView.setText(hotel.getmAdress());
+            vh.starsTextView.setText(String.valueOf(hotel.getmStars()) + " " + context.getString(R.string.stars));
+            vh.distanceTextView.setText(context.getString(R.string.distance) + " " + String.valueOf(hotel.getmDistance()));
+            vh.suitesTextView.setText(context.getString(R.string.suites_available) + " " + String.valueOf(hotel.getmSuitesAvailable()));
         }
     }
 }
